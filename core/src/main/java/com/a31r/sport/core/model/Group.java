@@ -8,4 +8,5 @@ import java.util.Set;
 public interface Group<T> {
     Set<T> getMembers();
     String getName();
+    void addMember(T member);
 }

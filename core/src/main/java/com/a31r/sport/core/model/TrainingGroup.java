@@ -34,6 +34,9 @@ public class TrainingGroup extends UserGroup {
 
     public void setCoach(Coach coach) {
         this.coach = coach;
+        if (!coach.getTrainingGroups().contains(this)) {
+            coach.getTrainingGroups().add(this);
+        }
     }
 
     public Set<TrainingSession> getSessions() {
@@ -46,7 +49,9 @@ public class TrainingGroup extends UserGroup {
 
     public void addSession(TrainingSession session) {
         sessions.add(session);
-        session.getGroups().add(this);
+        if (!session.getGroups().contains(this)) {
+            session.getGroups().add(this);
+        }
     }
 
     public void removeSession(TrainingSession session) {

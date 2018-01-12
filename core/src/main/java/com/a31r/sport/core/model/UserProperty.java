@@ -35,6 +35,9 @@ public class UserProperty extends AbstractEntity {
 
     public void setUser(User user) {
         this.user = user;
+        if (!user.getProperties().contains(this)) {
+            user.getProperties().add(this);
+        }
     }
 
     public UserPropertyType getPropertyType() {
@@ -51,6 +54,11 @@ public class UserProperty extends AbstractEntity {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return propertyType + ": " + value;
     }
 
     @Override

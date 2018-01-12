@@ -48,6 +48,10 @@ public class TrainingExerciseGroup extends AbstractEntity implements Group<Train
         this.members = members;
     }
 
+    public void addMember(TrainingExercise exercise) {
+        members.add(exercise);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

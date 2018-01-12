@@ -93,7 +93,9 @@ public class TrainingExercise extends AbstractEntity {
 
     public void addResult(ExerciseResult result) {
         results.add(result);
-        result.setTrainingExercise(this);
+        if (result.getTrainingExercise() != this) {
+            result.setTrainingExercise(this);
+        }
     }
 
     public void removeResult(ExerciseResult result) {

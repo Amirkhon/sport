@@ -48,14 +48,21 @@ public class UserGroup extends AbstractEntity implements Group<User> {
         this.members = members;
     }
 
-    public void addUser(User user) {
+    public void addMember(User user) {
         members.add(user);
-        user.getGroups().add(this);
+        if (!user.getGroups().contains(this)) {
+            user.getGroups().add(this);
+        }
     }
 
     public void removeUser(User user) {
         members.remove(user);
         user.getGroups().remove(this);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override

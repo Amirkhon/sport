@@ -114,7 +114,8 @@ public class MainTest extends TestCase{
         AthleteParameterType athleteParameterType = new AthleteParameterType(athleteParamName, "unit");
         athleteParameterTypeId = athleteParameterTypeRepository.save(athleteParameterType).getId();
 
-        AthleteParameter athleteParameter = new AthleteParameter(athlete, athleteParameterType, LocalDate.now(), athleteParamValue);
+        AthleteParameter athleteParameter = new AthleteParameter(athlete, athleteParameterType);
+        athleteParameter.getValues().add(new AthleteParameterValue(athleteParameter, LocalDate.now(), athleteParamValue));
         athleteParameterId = athleteParameterRepository.save(athleteParameter).getId();
 
         Coach coach = new Coach();
@@ -181,7 +182,7 @@ public class MainTest extends TestCase{
 
     @Test
     public void testAthleteParameterRepo() {
-        assertEquals(athleteParamValue, athleteParameterRepository.getOne(athleteParameterId).getValue());
+        assertEquals(athleteParamValue, athleteParameterRepository.getOne(athleteParameterId).getValues().get(0).getValue());
     }
 
     @Test

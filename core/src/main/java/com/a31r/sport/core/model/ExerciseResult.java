@@ -44,6 +44,9 @@ public class ExerciseResult extends AbstractEntity {
 
     public void setAthlete(Athlete athlete) {
         this.athlete = athlete;
+        if (!athlete.getResults().contains(this)) {
+            athlete.getResults().add(this);
+        }
     }
 
     public TrainingExercise getTrainingExercise() {
@@ -52,6 +55,9 @@ public class ExerciseResult extends AbstractEntity {
 
     public void setTrainingExercise(TrainingExercise trainingExercise) {
         this.trainingExercise = trainingExercise;
+        if (!trainingExercise.getResults().contains(this)) {
+            trainingExercise.getResults().add(this);
+        }
     }
 
     public Integer getRepeat() {

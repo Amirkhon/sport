@@ -131,6 +131,25 @@ public class User extends AbstractEntity {
         this.groups = groups;
     }
 
+    public void addProperty(UserProperty property) {
+        this.properties.add(property);
+        if (property.getUser() != this) {
+            property.setUser(this);
+        }
+    }
+
+    public void addGroup(UserGroup group) {
+        this.groups.add(group);
+        if (!group.getMembers().contains(this)) {
+            group.getMembers().add(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s %s %s", familyName, name, patronymic, birthday == null ? "" : " (" +  birthday + ")");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

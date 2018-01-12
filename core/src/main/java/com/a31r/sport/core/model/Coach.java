@@ -44,7 +44,9 @@ public class Coach extends User {
 
     public void addSessions(TrainingSession session) {
         trainingSessions.add(session);
-        session.setCoach(this);
+        if (session.getCoach() != this) {
+            session.setCoach(this);
+        }
     }
 
     public void removeSession(TrainingSession session) {
@@ -54,7 +56,9 @@ public class Coach extends User {
 
     public void addGroup(TrainingGroup group) {
         trainingGroups.add(group);
-        group.setCoach(this);
+        if (group.getCoach() != this) {
+            group.setCoach(this);
+        }
     }
 
     public void removeGroup(TrainingGroup group) {

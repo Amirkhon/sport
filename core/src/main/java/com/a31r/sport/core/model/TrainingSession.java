@@ -68,7 +68,9 @@ public class TrainingSession extends AbstractEntity {
 
     public void addTrainingExercise(TrainingExercise exercise) {
         exercises.add(exercise);
-        exercise.setTrainingSession(this);
+        if (exercise.getTrainingSession() != this) {
+            exercise.setTrainingSession(this);
+        }
     }
 
     public void removeTrainingExercise(TrainingExercise exercise) {
@@ -78,7 +80,9 @@ public class TrainingSession extends AbstractEntity {
 
     public void addGroup(TrainingGroup group) {
         groups.add(group);
-        group.getSessions().add(this);
+        if (!group.getSessions().contains(this)) {
+            group.getSessions().add(this);
+        }
     }
 
     public void removeGroup(TrainingGroup group) {

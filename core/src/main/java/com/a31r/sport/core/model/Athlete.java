@@ -27,9 +27,27 @@ public class Athlete extends User {
     @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL)
     private List<ExerciseResult> results = new ArrayList<>();
 
+    public List<AthleteParameter> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<AthleteParameter> parameters) {
+        this.parameters = parameters;
+    }
+
+    public List<ExerciseResult> getResults() {
+        return results;
+    }
+
+    public void setResults(List<ExerciseResult> results) {
+        this.results = results;
+    }
+
     public void addParameter(AthleteParameter parameter) {
         parameters.add(parameter);
-        parameter.setAthlete(this);
+        if (parameter.getAthlete() != this) {
+            parameter.setAthlete(this);
+        }
     }
 
     public void removeParameter(AthleteParameter parameter) {
@@ -39,7 +57,9 @@ public class Athlete extends User {
 
     public void addResult(ExerciseResult result) {
         results.add(result);
-        result.setAthlete(this);
+        if (result.getAthlete() != this) {
+            result.setAthlete(this);
+        }
     }
 
     public void removeResult(ExerciseResult result) {
