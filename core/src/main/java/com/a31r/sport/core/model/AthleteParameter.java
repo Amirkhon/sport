@@ -1,7 +1,8 @@
 package com.a31r.sport.core.model;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by bahodurova on 1/7/2018.
@@ -13,11 +14,9 @@ public class AthleteParameter extends AbstractEntity {
     public AthleteParameter() {
     }
 
-    public AthleteParameter(Athlete athlete, AthleteParameterType parameter, LocalDate date, String value) {
+    public AthleteParameter(Athlete athlete, AthleteParameterType parameterType) {
         this.athlete = athlete;
-        this.parameter = parameter;
-        this.date = date;
-        this.value = value;
+        this.parameterType = parameterType;
     }
 
     @ManyToOne
@@ -25,14 +24,11 @@ public class AthleteParameter extends AbstractEntity {
     private Athlete athlete;
 
     @OneToOne
-    @JoinColumn(name = "parameter_id", nullable = false)
-    private AthleteParameterType parameter;
+    @JoinColumn(name = "parameter_type_id", nullable = false)
+    private AthleteParameterType parameterType;
 
-    @Column(name = "date", nullable = false)
-    private LocalDate date;
-
-    @Column(name = "value", nullable = false)
-    private String value;
+    @OneToMany(mappedBy = "parameter")
+    private List<AthleteParameterValue> values = new ArrayList<>();
 
     public Athlete getAthlete() {
         return athlete;
@@ -40,30 +36,32 @@ public class AthleteParameter extends AbstractEntity {
 
     public void setAthlete(Athlete athlete) {
         this.athlete = athlete;
+        if (!athlete.getParameters().contains(this)) {
+            athlete.getParameters().add(this);
+        }
     }
 
-    public AthleteParameterType getParameter() {
-        return parameter;
+    public AthleteParameterType getParameterType() {
+        return parameterType;
     }
 
-    public void setParameter(AthleteParameterType parameter) {
-        this.parameter = parameter;
+    public List<AthleteParameterValue> getValues() {
+        return values;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public void setValues(List<AthleteParameterValue> values) {
+        this.values = values;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setParameterType(AthleteParameterType parameterType) {
+        this.parameterType = parameterType;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+    public void addValue(AthleteParameterValue value) {
+        this.values.add(value);
+        if (value.getParameter() != this) {
+            value.setParameter(this);
+        }
     }
 
     @Override
@@ -75,18 +73,14 @@ public class AthleteParameter extends AbstractEntity {
         AthleteParameter that = (AthleteParameter) o;
 
         if (athlete != null ? !athlete.equals(that.athlete) : that.athlete != null) return false;
-        if (parameter != null ? !parameter.equals(that.parameter) : that.parameter != null) return false;
-        if (date != null ? !date.equals(that.date) : that.date != null) return false;
-        return value != null ? value.equals(that.value) : that.value == null;
+        return parameterType != null ? parameterType.equals(that.parameterType) : that.parameterType == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (athlete != null ? athlete.hashCode() : 0);
-        result = 31 * result + (parameter != null ? parameter.hashCode() : 0);
-        result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (parameterType != null ? parameterType.hashCode() : 0);
         return result;
     }
 }
