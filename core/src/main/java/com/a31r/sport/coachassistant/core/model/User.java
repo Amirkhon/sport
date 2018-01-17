@@ -46,10 +46,10 @@ public class User extends AbstractEntity {
     @Column(name = "photo", columnDefinition="mediumblob")
     private byte[] photo;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserProperty> properties = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "members")
+    @ManyToMany(mappedBy = "members", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<UserGroup> groups = new HashSet<>();
 
     public String getUsername() {

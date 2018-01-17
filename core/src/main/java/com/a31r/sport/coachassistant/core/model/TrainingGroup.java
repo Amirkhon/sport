@@ -22,7 +22,7 @@ public class TrainingGroup extends UserGroup {
     @JoinColumn(name = "coach_id")
     private Coach coach;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "training_group_session",
             joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id"))

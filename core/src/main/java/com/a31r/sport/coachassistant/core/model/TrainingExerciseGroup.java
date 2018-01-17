@@ -22,7 +22,7 @@ public class TrainingExerciseGroup extends AbstractEntity implements Group<Train
     @Column(name = "name")
     private String name;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "exercise_group_exercise",
             joinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "exercise_id", referencedColumnName = "id")})

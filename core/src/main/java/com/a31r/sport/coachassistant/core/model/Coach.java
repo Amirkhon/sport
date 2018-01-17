@@ -18,10 +18,10 @@ public class Coach extends User {
         super(name, familyName, patronymic);
     }
 
-    @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "coach", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Set<TrainingSession> trainingSessions = new HashSet<>();
 
-    @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "coach", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Set<TrainingGroup> trainingGroups = new HashSet<>();
 
     public Set<TrainingSession> getTrainingSessions() {

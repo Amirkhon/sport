@@ -28,7 +28,7 @@ public class AthleteParameter extends AbstractEntity {
     @JoinColumn(name = "parameter_type_id", nullable = false)
     private AthleteParameterType parameterType;
 
-    @OneToMany(mappedBy = "parameter", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parameter", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AthleteParameterValue> values = new ArrayList<>();
 
     public Athlete getAthlete() {

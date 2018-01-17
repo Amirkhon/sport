@@ -24,14 +24,14 @@ public class TrainingSession extends AbstractEntity {
     @JoinColumn(name = "schedule")
     private Schedule schedule;
 
-    @OneToMany(mappedBy = "trainingSession", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainingSession", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrainingExercise> exercises = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "coach_id")
     private Coach coach;
 
-    @ManyToMany(mappedBy = "sessions", cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "sessions", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<TrainingGroup> groups = new HashSet<>();
 
     public Schedule getSchedule() {

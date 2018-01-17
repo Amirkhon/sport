@@ -21,10 +21,10 @@ public class Athlete extends User {
         super(name, familyName, patronymic);
     }
 
-    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AthleteParameter> parameters = new ArrayList<>();
 
-    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExerciseResult> results = new ArrayList<>();
 
     public List<AthleteParameter> getParameters() {

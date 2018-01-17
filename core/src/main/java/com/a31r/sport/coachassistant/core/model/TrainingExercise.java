@@ -42,10 +42,10 @@ public class TrainingExercise extends AbstractEntity {
     @JoinColumn(name = "training_session_id")
     private TrainingSession trainingSession;
 
-    @OneToMany(mappedBy = "trainingExercise", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainingExercise", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExerciseResult> results = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "members")
+    @ManyToMany(mappedBy = "members", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<TrainingExerciseGroup> groups = new HashSet<>();
 
     public Integer getSequenceNumber() {
