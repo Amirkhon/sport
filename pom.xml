@@ -10,7 +10,6 @@
     <version>1.0</version>
     <modules>
         <module>core</module>
-        <module>coachassistant</module>
     </modules>
 
 </project>
