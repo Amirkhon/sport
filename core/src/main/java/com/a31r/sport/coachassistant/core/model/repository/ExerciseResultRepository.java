@@ -2,6 +2,7 @@ package com.a31r.sport.coachassistant.core.model.repository;
 
 import com.a31r.sport.coachassistant.core.model.Athlete;
 import com.a31r.sport.coachassistant.core.model.ExerciseResult;
+import com.a31r.sport.coachassistant.core.model.TrainingSessionResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -11,4 +12,5 @@ import java.util.List;
  */
 public interface ExerciseResultRepository extends JpaRepository<ExerciseResult, Long> {
     List<ExerciseResult> findAllByAthlete(Athlete athlete);
+    List<ExerciseResult> findAllByTrainingSessionResult(TrainingSessionResult result);
 }

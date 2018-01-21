@@ -18,10 +18,10 @@ public class Coach extends User {
         super(name, familyName, patronymic);
     }
 
-    @OneToMany(mappedBy = "coach", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "coach")
     private Set<TrainingSession> trainingSessions = new HashSet<>();
 
-    @OneToMany(mappedBy = "coach", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "coach")
     private Set<TrainingGroup> trainingGroups = new HashSet<>();
 
     public Set<TrainingSession> getTrainingSessions() {
@@ -40,27 +40,4 @@ public class Coach extends User {
         this.trainingGroups = trainingGroups;
     }
 
-    public void addSessions(TrainingSession session) {
-        trainingSessions.add(session);
-        if (session.getCoach() != this) {
-            session.setCoach(this);
-        }
-    }
-
-    public void removeSession(TrainingSession session) {
-        trainingSessions.remove(session);
-        session.setCoach(null);
-    }
-
-    public void addGroup(TrainingGroup group) {
-        trainingGroups.add(group);
-        if (group.getCoach() != this) {
-            group.setCoach(this);
-        }
-    }
-
-    public void removeGroup(TrainingGroup group) {
-        trainingGroups.remove(group);
-        group.setCoach(null);
-    }
 }

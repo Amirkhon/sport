@@ -22,7 +22,7 @@ public class TrainingExerciseGroup extends AbstractEntity implements Group<Train
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany
     @JoinTable(name = "exercise_group_exercise",
             joinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "exercise_id", referencedColumnName = "id")})
@@ -48,14 +48,10 @@ public class TrainingExerciseGroup extends AbstractEntity implements Group<Train
 
     public void addMember(TrainingExercise exercise) {
         members.add(exercise);
-        if (!exercise.getGroups().contains(this)) {
-            exercise.getGroups().add(this);
-        }
     }
 
     public void removeMember(TrainingExercise exercise) {
         members.remove(exercise);
-        exercise.getGroups().remove(this);
     }
 
     @Override

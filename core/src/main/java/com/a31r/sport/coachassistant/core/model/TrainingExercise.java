@@ -106,26 +106,18 @@ public class TrainingExercise extends AbstractEntity {
 
     public void addResult(ExerciseResult result) {
         results.add(result);
-        if (result.getTrainingExercise() != this) {
-            result.setTrainingExercise(this);
-        }
     }
 
     public void removeResult(ExerciseResult result) {
         results.remove(result);
-        result.setTrainingExercise(null);
     }
 
     public void addGroup(TrainingExerciseGroup group) {
         this.groups.add(group);
-        if (!group.getMembers().contains(this)) {
-            group.getMembers().add(this);
-        }
     }
 
     public void removeGroup(TrainingExerciseGroup group) {
         this.groups.remove(group);
-        group.getMembers().remove(this);
     }
 
     @Override
@@ -153,5 +145,10 @@ public class TrainingExercise extends AbstractEntity {
         result = 31 * result + (exercise != null ? exercise.hashCode() : 0);
         result = 31 * result + (trainingSession != null ? trainingSession.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s - %d раза (%d мин.)", exercise, repetitions, duration.toMinutes());
     }
 }

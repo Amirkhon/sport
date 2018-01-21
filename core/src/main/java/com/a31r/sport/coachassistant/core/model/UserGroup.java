@@ -22,7 +22,7 @@ public class UserGroup extends AbstractEntity implements Group<User> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(name = "user_group_user",
             joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
@@ -48,14 +48,10 @@ public class UserGroup extends AbstractEntity implements Group<User> {
 
     public void addMember(User user) {
         members.add(user);
-        if (!user.getGroups().contains(this)) {
-            user.getGroups().add(this);
-        }
     }
 
     public void removeMember(User user) {
         members.remove(user);
-        user.getGroups().remove(this);
     }
 
     @Override

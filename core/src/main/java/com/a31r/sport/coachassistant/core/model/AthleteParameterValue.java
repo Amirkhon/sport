@@ -56,9 +56,5 @@ public class AthleteParameterValue extends AbstractEntity {
 
     public void setParameter(AthleteParameter parameter) {
         this.parameter = parameter;
-        if (!parameter.getValues().contains(this))
-        {
-            parameter.getValues().add(this);
-        }
     }
 }

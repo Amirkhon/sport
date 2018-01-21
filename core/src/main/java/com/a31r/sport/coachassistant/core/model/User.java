@@ -49,7 +49,7 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserProperty> properties = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "members", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "members")
     private Set<UserGroup> groups = new HashSet<>();
 
     public String getUsername() {
@@ -143,29 +143,15 @@ public class User extends AbstractEntity {
         this.properties.remove(property);
     }
 
-    public void addGroup(UserGroup group) {
-        this.groups.add(group);
-        if (!group.getMembers().contains(this)) {
-            group.getMembers().add(this);
-        }
-    }
-
-    public void removeGroup(UserGroup group) {
-        this.groups.remove(group);
-        if (group.getMembers().contains(this)) {
-            group.getMembers().remove(this);
-        }
-    }
-
     @Override
     public String toString() {
-        return String.format("%s %s %s %s", familyName, name, patronymic, " (" +  getBirthdayString() + ")");
+        return String.format("%s %s %s", familyName, name, patronymic);
     }
 
-    private String getBirthdayString() {
+    protected String getBirthdayString() {
         if (birthday != null) {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            return dateTimeFormatter.format(birthday);
+            return " (" +  dateTimeFormatter.format(birthday) + ")";
         }
         return "";
     }

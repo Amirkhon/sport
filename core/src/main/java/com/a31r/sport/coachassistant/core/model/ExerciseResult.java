@@ -29,6 +29,10 @@ public class ExerciseResult extends AbstractEntity {
     @JoinColumn(name = "training_exercise_id", nullable = false)
     private TrainingExercise trainingExercise;
 
+    @ManyToOne
+    @JoinColumn(name = "training_session_result_id")
+    private TrainingSessionResult trainingSessionResult;
+
     @Column(name = "repeat")
     private Integer repeat;
 
@@ -44,9 +48,6 @@ public class ExerciseResult extends AbstractEntity {
 
     public void setAthlete(Athlete athlete) {
         this.athlete = athlete;
-        if (!athlete.getResults().contains(this)) {
-            athlete.getResults().add(this);
-        }
     }
 
     public TrainingExercise getTrainingExercise() {
@@ -55,9 +56,14 @@ public class ExerciseResult extends AbstractEntity {
 
     public void setTrainingExercise(TrainingExercise trainingExercise) {
         this.trainingExercise = trainingExercise;
-        if (!trainingExercise.getResults().contains(this)) {
-            trainingExercise.getResults().add(this);
-        }
+    }
+
+    public TrainingSessionResult getTrainingSessionResult() {
+        return trainingSessionResult;
+    }
+
+    public void setTrainingSessionResult(TrainingSessionResult trainingSessionResult) {
+        this.trainingSessionResult = trainingSessionResult;
     }
 
     public Integer getRepeat() {
@@ -95,6 +101,8 @@ public class ExerciseResult extends AbstractEntity {
         if (athlete != null ? !athlete.equals(that.athlete) : that.athlete != null) return false;
         if (trainingExercise != null ? !trainingExercise.equals(that.trainingExercise) : that.trainingExercise != null)
             return false;
+        if (trainingSessionResult != null ? !trainingSessionResult.equals(that.trainingSessionResult) : that.trainingSessionResult != null)
+            return false;
         if (repeat != null ? !repeat.equals(that.repeat) : that.repeat != null) return false;
         if (duration != null ? !duration.equals(that.duration) : that.duration != null) return false;
         return value != null ? value.equals(that.value) : that.value == null;
@@ -105,6 +113,7 @@ public class ExerciseResult extends AbstractEntity {
         int result = super.hashCode();
         result = 31 * result + (athlete != null ? athlete.hashCode() : 0);
         result = 31 * result + (trainingExercise != null ? trainingExercise.hashCode() : 0);
+        result = 31 * result + (trainingSessionResult != null ? trainingSessionResult.hashCode() : 0);
         result = 31 * result + (repeat != null ? repeat.hashCode() : 0);
         result = 31 * result + (duration != null ? duration.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);

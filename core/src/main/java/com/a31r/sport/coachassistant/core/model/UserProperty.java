@@ -35,9 +35,6 @@ public class UserProperty extends AbstractEntity {
 
     public void setUser(User user) {
         this.user = user;
-        if (!user.getProperties().contains(this)) {
-            user.getProperties().add(this);
-        }
     }
 
     public UserPropertyType getPropertyType() {

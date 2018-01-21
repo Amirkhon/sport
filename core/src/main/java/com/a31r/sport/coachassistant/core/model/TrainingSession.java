@@ -20,6 +20,9 @@ public class TrainingSession extends AbstractEntity {
         this.schedule = schedule;
     }
 
+    @Column(name = "name")
+    private String name;
+
     @OneToOne
     @JoinColumn(name = "schedule")
     private Schedule schedule;
@@ -31,8 +34,19 @@ public class TrainingSession extends AbstractEntity {
     @JoinColumn(name = "coach_id")
     private Coach coach;
 
-    @ManyToMany(mappedBy = "sessions", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "sessions")
     private Set<TrainingGroup> groups = new HashSet<>();
+
+    @OneToMany(mappedBy = "trainingSession", orphanRemoval = true)
+    private List<TrainingSessionResult> results = new ArrayList<>();
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Schedule getSchedule() {
         return schedule;
@@ -66,28 +80,36 @@ public class TrainingSession extends AbstractEntity {
         this.groups = groups;
     }
 
+    public List<TrainingSessionResult> getResults() {
+        return results;
+    }
+
+    public void setResults(List<TrainingSessionResult> results) {
+        this.results = results;
+    }
+
     public void addTrainingExercise(TrainingExercise exercise) {
         exercises.add(exercise);
-        if (exercise.getTrainingSession() != this) {
-            exercise.setTrainingSession(this);
-        }
     }
 
     public void removeTrainingExercise(TrainingExercise exercise) {
         exercises.remove(exercise);
-        exercise.setTrainingSession(null);
     }
 
     public void addGroup(TrainingGroup group) {
         groups.add(group);
-        if (!group.getSessions().contains(this)) {
-            group.getSessions().add(this);
-        }
     }
 
     public void removeGroup(TrainingGroup group) {
         groups.remove(group);
-        group.getSessions().remove(this);
+    }
+
+    public void addResult(TrainingSessionResult result) {
+        this.results.add(result);
+    }
+
+    public void removeResult(TrainingSessionResult result) {
+        this.results.remove(result);
     }
 
     @Override
@@ -108,5 +130,10 @@ public class TrainingSession extends AbstractEntity {
         result = 31 * result + (schedule != null ? schedule.hashCode() : 0);
         result = 31 * result + (coach != null ? coach.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", name, coach);
     }
 }

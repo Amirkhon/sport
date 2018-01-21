@@ -22,7 +22,7 @@ public class TrainingGroup extends UserGroup {
     @JoinColumn(name = "coach_id")
     private Coach coach;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(name = "training_group_session",
             joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id"))
@@ -34,9 +34,6 @@ public class TrainingGroup extends UserGroup {
 
     public void setCoach(Coach coach) {
         this.coach = coach;
-        if (!coach.getTrainingGroups().contains(this)) {
-            coach.getTrainingGroups().add(this);
-        }
     }
 
     public Set<TrainingSession> getSessions() {

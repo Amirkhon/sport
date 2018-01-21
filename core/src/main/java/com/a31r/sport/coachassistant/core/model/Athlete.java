@@ -1,9 +1,7 @@
 package com.a31r.sport.coachassistant.core.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +19,10 @@ public class Athlete extends User {
         super(name, familyName, patronymic);
     }
 
-    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "athlete", orphanRemoval = true)
     private List<AthleteParameter> parameters = new ArrayList<>();
 
-    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "athlete", orphanRemoval = true)
     private List<ExerciseResult> results = new ArrayList<>();
 
     public List<AthleteParameter> getParameters() {
@@ -45,26 +43,26 @@ public class Athlete extends User {
 
     public void addParameter(AthleteParameter parameter) {
         parameters.add(parameter);
-        if (parameter.getAthlete() != this) {
-            parameter.setAthlete(this);
-        }
     }
 
     public void removeParameter(AthleteParameter parameter) {
         parameters.remove(parameter);
-        parameter.setAthlete(null);
     }
 
     public void addResult(ExerciseResult result) {
         results.add(result);
-        if (result.getAthlete() != this) {
-            result.setAthlete(this);
-        }
     }
 
     public void removeResult(ExerciseResult result) {
         results.remove(result);
-        result.setAthlete(null);
     }
 
+    public String shortFullName() {
+        return getFamilyName() + " " + getName().charAt(0) + "." + getPatronymic().charAt(0) + "." + getBirthdayString();
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + getBirthdayString();
+    }
 }
