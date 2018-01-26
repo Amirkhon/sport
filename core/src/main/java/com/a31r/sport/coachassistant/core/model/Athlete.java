@@ -1,7 +1,6 @@
 package com.a31r.sport.coachassistant.core.model;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
