@@ -141,6 +141,9 @@ public class User extends AbstractEntity {
 
     public void removeProperty(UserProperty property) {
         this.properties.remove(property);
+        if (property.getUser() == this) {
+            property.setUser(null);
+        }
     }
 
     @Override
