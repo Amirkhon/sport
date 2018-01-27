@@ -20,6 +20,11 @@ public class AthleteParameter extends AbstractEntity {
         this.parameterType = parameterType;
     }
 
+    public AthleteParameter(AthleteParameterType parameterType, AthleteParameterValue value) {
+        this.parameterType = parameterType;
+        addValue(value);
+    }
+
     @ManyToOne
     @JoinColumn(name = "athlete_id")
     private Athlete athlete;
@@ -28,7 +33,7 @@ public class AthleteParameter extends AbstractEntity {
     @JoinColumn(name = "parameter_type_id", nullable = false)
     private AthleteParameterType parameterType;
 
-    @OneToMany(mappedBy = "parameter", orphanRemoval = true)
+    @OneToMany(mappedBy = "parameter", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<AthleteParameterValue> values = new ArrayList<>();
 
     public Athlete getAthlete() {
@@ -57,6 +62,12 @@ public class AthleteParameter extends AbstractEntity {
 
     public void addValue(AthleteParameterValue value) {
         this.values.add(value);
+        value.setParameter(this);
+    }
+
+    public void removeValue(AthleteParameterValue value) {
+        this.values.add(value);
+        value.setParameter(null);
     }
 
     public AthleteParameterValue getLatestValue() {

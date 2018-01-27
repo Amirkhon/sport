@@ -16,8 +16,8 @@ public class TrainingSession extends AbstractEntity {
     public TrainingSession() {
     }
 
-    public TrainingSession(Schedule schedule) {
-        this.schedule = schedule;
+    public TrainingSession(String name) {
+        this.name = name;
     }
 
     @Column(name = "name")
@@ -34,10 +34,13 @@ public class TrainingSession extends AbstractEntity {
     @JoinColumn(name = "coach_id")
     private Coach coach;
 
-    @ManyToMany(mappedBy = "sessions")
+    @ManyToMany
+    @JoinTable(name = "training_group_session",
+            joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id"))
     private Set<TrainingGroup> groups = new HashSet<>();
 
-    @OneToMany(mappedBy = "trainingSession", orphanRemoval = true)
+    @OneToMany(mappedBy = "trainingSession", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrainingSessionResult> results = new ArrayList<>();
 
     public String getName() {
@@ -90,10 +93,12 @@ public class TrainingSession extends AbstractEntity {
 
     public void addTrainingExercise(TrainingExercise exercise) {
         exercises.add(exercise);
+        exercise.setTrainingSession(this);
     }
 
     public void removeTrainingExercise(TrainingExercise exercise) {
         exercises.remove(exercise);
+        exercise.setTrainingSession(null);
     }
 
     public void addGroup(TrainingGroup group) {
@@ -105,11 +110,13 @@ public class TrainingSession extends AbstractEntity {
     }
 
     public void addResult(TrainingSessionResult result) {
-        this.results.add(result);
+        results.add(result);
+        result.setTrainingSession(this);
     }
 
     public void removeResult(TrainingSessionResult result) {
-        this.results.remove(result);
+        results.remove(result);
+        result.setTrainingSession(null);
     }
 
     @Override

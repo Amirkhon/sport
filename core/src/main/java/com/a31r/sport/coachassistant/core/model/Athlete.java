@@ -18,11 +18,14 @@ public class Athlete extends User {
         super(name, familyName, patronymic);
     }
 
-    @OneToMany(mappedBy = "athlete", orphanRemoval = true)
+    @OneToMany(mappedBy = "athlete", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<AthleteParameter> parameters = new ArrayList<>();
 
-    @OneToMany(mappedBy = "athlete", orphanRemoval = true)
+    @OneToMany(mappedBy = "athlete", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ExerciseResult> results = new ArrayList<>();
+
+    @OneToMany(mappedBy = "athlete", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<AthleteAttendance> attendances = new ArrayList<>();
 
     public List<AthleteParameter> getParameters() {
         return parameters;
@@ -40,20 +43,42 @@ public class Athlete extends User {
         this.results = results;
     }
 
+    public List<AthleteAttendance> getAttendances() {
+        return attendances;
+    }
+
+    public void setAttendances(List<AthleteAttendance> attendances) {
+        this.attendances = attendances;
+    }
+
     public void addParameter(AthleteParameter parameter) {
         parameters.add(parameter);
+        parameter.setAthlete(this);
     }
 
     public void removeParameter(AthleteParameter parameter) {
         parameters.remove(parameter);
+        parameter.setAthlete(null);
     }
 
     public void addResult(ExerciseResult result) {
         results.add(result);
+        result.setAthlete(this);
     }
 
     public void removeResult(ExerciseResult result) {
         results.remove(result);
+        result.setAthlete(null);
+    }
+
+    public void addAttendance(AthleteAttendance athleteAttendance) {
+        attendances.add(athleteAttendance);
+        athleteAttendance.setAthlete(this);
+    }
+
+    public void removeAttendance(AthleteAttendance athleteAttendance) {
+        attendances.remove(athleteAttendance);
+        athleteAttendance.setAthlete(null);
     }
 
     public String shortFullName() {

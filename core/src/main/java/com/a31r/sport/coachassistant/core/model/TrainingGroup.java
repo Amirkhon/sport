@@ -22,10 +22,7 @@ public class TrainingGroup extends UserGroup {
     @JoinColumn(name = "coach_id")
     private Coach coach;
 
-    @ManyToMany
-    @JoinTable(name = "training_group_session",
-            joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id"))
+    @ManyToMany(mappedBy = "groups")
     private Set<TrainingSession> sessions = new HashSet<>();
 
     public Coach getCoach() {
@@ -46,14 +43,10 @@ public class TrainingGroup extends UserGroup {
 
     public void addSession(TrainingSession session) {
         sessions.add(session);
-        if (!session.getGroups().contains(this)) {
-            session.getGroups().add(this);
-        }
     }
 
     public void removeSession(TrainingSession session) {
         sessions.remove(session);
-        session.getGroups().remove(this);
     }
 
     @Override

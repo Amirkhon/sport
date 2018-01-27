@@ -12,9 +12,9 @@ public class AthleteAttendance extends AbstractEntity {
     public AthleteAttendance() {
     }
 
-    public AthleteAttendance(Athlete athlete, TrainingSessionResult trainingSessionResult) {
+    public AthleteAttendance(Athlete athlete, Boolean attendance) {
         this.athlete = athlete;
-        this.trainingSessionResult = trainingSessionResult;
+        this.attendance = attendance;
     }
 
     public AthleteAttendance(Athlete athlete, TrainingSessionResult trainingSessionResult, Boolean attendance) {
@@ -23,7 +23,8 @@ public class AthleteAttendance extends AbstractEntity {
         this.attendance = attendance;
     }
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "athlete_id", nullable = false)
     private Athlete athlete;
 
     @ManyToOne

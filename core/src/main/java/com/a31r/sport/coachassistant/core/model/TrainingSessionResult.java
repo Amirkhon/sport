@@ -2,6 +2,7 @@ package com.a31r.sport.coachassistant.core.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,10 +27,10 @@ public class TrainingSessionResult extends AbstractEntity {
     private LocalDate date;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AthleteAttendance> attendances;
+    private List<AthleteAttendance> attendances = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ExerciseResult> results;
+    private List<ExerciseResult> results = new ArrayList<>();
 
     @OneToOne
     private Coach author;
@@ -76,30 +77,22 @@ public class TrainingSessionResult extends AbstractEntity {
 
     public void addAttendance(AthleteAttendance attendance) {
         this.attendances.add(attendance);
-        if (!attendance.getTrainingSessionResult().equals(this)) {
-            attendance.setTrainingSessionResult(this);
-        }
+        attendance.setTrainingSessionResult(this);
     }
 
     public void removeAttendance(AthleteAttendance attendance) {
         this.attendances.remove(attendance);
-        if (attendance.getTrainingSessionResult().equals(this)) {
-            attendance.setTrainingSessionResult(null);
-        }
+        attendance.setTrainingSessionResult(null);
     }
 
     public void addResult(ExerciseResult result) {
         this.results.add(result);
-        if (!result.getTrainingSessionResult().equals(this)) {
-            result.setTrainingSessionResult(this);
-        }
+        result.setTrainingSessionResult(this);
     }
 
     public void removeResult(ExerciseResult result) {
         this.results.remove(result);
-        if (result.getTrainingSessionResult().equals(this)) {
-            result.setTrainingSessionResult(null);
-        }
+        result.setTrainingSessionResult(null);
     }
 
     @Override
