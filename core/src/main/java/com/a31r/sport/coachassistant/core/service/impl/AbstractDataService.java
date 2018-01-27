@@ -1,5 +1,6 @@
-package com.a31r.sport.coachassistant.core.model.service;
+package com.a31r.sport.coachassistant.core.service.impl;
 
+import com.a31r.sport.coachassistant.core.service.DataService;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,8 +17,8 @@ public abstract class AbstractDataService<T> implements DataService<T> {
     }
 
     @Override
-    public void includeMembers(T object) {
-
+    public T initialize(T object) {
+        return object;
     }
 
     @Override

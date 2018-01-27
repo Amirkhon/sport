@@ -1,5 +1,6 @@
-package com.a31r.sport.coachassistant.core.model.service;
+package com.a31r.sport.coachassistant.core.service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -7,7 +8,8 @@ import java.util.List;
  */
 public interface DataService<T> {
     T findById(Long id);
-    void includeMembers(T object);
+    @Transactional
+    T initialize(T object);
     List<T> findAll();
     T save(T object);
     void delete(T object);

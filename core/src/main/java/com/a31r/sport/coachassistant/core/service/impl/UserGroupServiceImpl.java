@@ -1,25 +1,20 @@
-package com.a31r.sport.coachassistant.core.model.service;
+package com.a31r.sport.coachassistant.core.service.impl;
 
 import com.a31r.sport.coachassistant.core.model.UserGroup;
 import com.a31r.sport.coachassistant.core.model.repository.UserGroupRepository;
-import com.a31r.sport.coachassistant.core.model.repository.UserRepository;
+import com.a31r.sport.coachassistant.core.service.UserGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
 
 /**
  * Created by bahodurova on 1/16/2018.
  */
 @Service
-public class UserGroupService extends AbstractDataService<UserGroup>{
+public class UserGroupServiceImpl extends AbstractDataService<UserGroup> implements UserGroupService {
 
     @Autowired
     private UserGroupRepository repository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Override
     JpaRepository<UserGroup, Long> getRepository() {
@@ -27,7 +22,12 @@ public class UserGroupService extends AbstractDataService<UserGroup>{
     }
 
     @Override
-    public void includeMembers(UserGroup object) {
-        object.setMembers(new HashSet<>(userRepository.findAllByGroupsContains(object)));
+    public UserGroup initialize(UserGroup object) {
+        UserGroup userGroup = repository.getOne(object.getId());
+        if (userGroup != null) {
+            userGroup.getMembers().size();
+            return userGroup;
+        }
+        return object;
     }
 }

@@ -1,4 +1,4 @@
-package com.a31r.sport.coachassistant.core.model.service;
+package com.a31r.sport.coachassistant.core.service.impl;
 
 import com.a31r.sport.coachassistant.core.model.Schedule;
 import com.a31r.sport.coachassistant.core.model.repository.ScheduleRepository;
