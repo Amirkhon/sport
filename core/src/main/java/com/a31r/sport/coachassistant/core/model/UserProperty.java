@@ -18,6 +18,11 @@ public class UserProperty extends AbstractEntity {
         this.value = value;
     }
 
+    public UserProperty(UserPropertyType propertyType, String value) {
+        this.propertyType = propertyType;
+        this.value = value;
+    }
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
