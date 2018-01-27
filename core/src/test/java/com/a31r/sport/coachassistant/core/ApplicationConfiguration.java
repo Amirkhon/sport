@@ -2,6 +2,7 @@ package com.a31r.sport.coachassistant.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -20,10 +21,11 @@ import java.util.Properties;
  * Created by bahodurova on 1/7/2018.
  */
 @Configuration
+@ComponentScan(basePackages = {"com.a31r.sport.coachassistant.core"})
 @EnableJpaRepositories(basePackages = "com.a31r.sport.coachassistant.core.model.repository")
 @PropertySource("test.properties")
 @EnableTransactionManagement
-public class JpaConfig {
+public class ApplicationConfiguration {
 
     @Autowired
     private Environment env;
