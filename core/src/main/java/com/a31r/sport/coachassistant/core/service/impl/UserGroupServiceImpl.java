@@ -23,10 +23,9 @@ public class UserGroupServiceImpl extends AbstractDataService<UserGroup> impleme
 
     @Override
     public UserGroup initialize(UserGroup object) {
-        UserGroup userGroup = repository.getOne(object.getId());
-        if (userGroup != null) {
-            userGroup.getMembers().size();
-            return userGroup;
+        object = repository.getOne(object.getId());
+        if (object != null) {
+            object.getMembers().size();
         }
         return object;
     }

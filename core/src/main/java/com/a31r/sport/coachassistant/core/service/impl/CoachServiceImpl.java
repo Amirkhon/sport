@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-
 /**
  * Created by bahodurova on 1/16/2018.
  */
@@ -33,31 +31,27 @@ public class CoachServiceImpl extends AbstractDataService<Coach> implements Coac
 
     @Override
     public Coach initialize(Coach object) {
-        Coach coach = repository.getOne(object.getId());
-        if (coach != null) {
-            coach.getTrainingSessions().size();
-            coach.getTrainingGroups().size();
-            return coach;
+        object = repository.getOne(object.getId());
+        if (object != null) {
+            object.getTrainingSessions().size();
+            object.getTrainingGroups().size();
         }
         return object;
     }
 
-    @Transactional
     @Override
     public void delete(Coach object) {
-        Coach coach = repository.getOne(object.getId());
-
-        if (coach != null) {
+        object = repository.getOne(object.getId());
+        if (object != null) {
             for (TrainingSession session : object.getTrainingSessions()) {
-                session.setCoach(null);
+                session.removeCoach(object);
                 sessionRepository.save(session);
             }
 
             for (TrainingGroup group : object.getTrainingGroups()) {
-                group.setCoach(null);
+                group.removeCoach(object);
                 groupRepository.save(group);
             }
-            object = coach;
         }
 
         super.delete(object);

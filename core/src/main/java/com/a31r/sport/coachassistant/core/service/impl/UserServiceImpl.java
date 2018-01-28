@@ -26,11 +26,10 @@ public class UserServiceImpl extends AbstractDataService<User> implements UserSe
     @Override
     @Transactional
     public User initialize(User object) {
-        User user = repository.getOne(object.getId());
-        if (user != null) {
-            user.getGroups().size();
-            user.getProperties().size();
-            return user;
+        object = repository.getOne(object.getId());
+        if (object != null) {
+            object.getGroups().size();
+            object.getProperties().size();
         }
         return object;
     }

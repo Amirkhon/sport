@@ -1,9 +1,11 @@
 package com.a31r.sport.coachassistant.core.service;
 
 import com.a31r.sport.coachassistant.core.model.Athlete;
+import com.a31r.sport.coachassistant.core.model.Coach;
 import com.a31r.sport.coachassistant.core.model.TrainingGroup;
 import com.a31r.sport.coachassistant.core.model.TrainingSession;
 import com.a31r.sport.coachassistant.core.model.repository.AthleteRepository;
+import com.a31r.sport.coachassistant.core.model.repository.CoachRepository;
 import com.a31r.sport.coachassistant.core.model.repository.TrainingGroupRepository;
 import com.a31r.sport.coachassistant.core.model.repository.TrainingSessionRepository;
 
@@ -23,10 +25,13 @@ public class TrainingGroupServiceTest extends DataServiceTest<TrainingGroup> {
     private AthleteRepository athleteRepository;
     @Resource
     private TrainingSessionRepository sessionRepository;
+    @Resource
+    private CoachRepository coachRepository;
 
     private static boolean setupIsDone;
     private static long groupId;
     private static long athleteId;
+    private static long coachId;
     private static long sessionId;
 
     @Override
@@ -54,9 +59,13 @@ public class TrainingGroupServiceTest extends DataServiceTest<TrainingGroup> {
         Athlete athlete = new Athlete("AthleteN", "AthleteFN", "AthleteP");
         athlete = athleteRepository.save(athlete);
         athleteId = athlete.getId();
+        Coach coach = new Coach("CoachN", "CoachFN", "CoachP");
+        coach = coachRepository.save(coach);
+        coachId = coach.getId();
         TrainingSession session = new TrainingSession("TSName");
         TrainingGroup group = new TrainingGroup("TGName");
         group.addMember(athlete);
+        group.addCoach(coach);
         group = repository.save(group);
         groupId = group.getId();
         session.addGroup(group);
@@ -71,6 +80,10 @@ public class TrainingGroupServiceTest extends DataServiceTest<TrainingGroup> {
         assertFalse(group.getMembers().isEmpty());
         assertEquals(1, group.getMembers().size());
         assertEquals(athleteId, group.getMembers().iterator().next().getId());
+        assertNotNull(group.getCoaches());
+        assertFalse(group.getCoaches().isEmpty());
+        assertEquals(1, group.getCoaches().size());
+        assertEquals(coachId, group.getCoaches().iterator().next().getId());
         assertNotNull(group.getSessions());
         assertFalse(group.getSessions().isEmpty());
         assertEquals(1, group.getSessions().size());
@@ -82,9 +95,13 @@ public class TrainingGroupServiceTest extends DataServiceTest<TrainingGroup> {
         Athlete athlete = new Athlete("NewAthleteN", "NewAthleteFN", "NewAthleteP");
         athlete = athleteRepository.save(athlete);
         long athleteId = athlete.getId();
+        Coach coach = new Coach("NewCoachN", "NewCoachFN", "NewCoachP");
+        coach = coachRepository.save(coach);
+        long coachId = coach.getId();
         TrainingSession session = new TrainingSession("TSName");
         TrainingGroup group = new TrainingGroup("TGName");
         group.addMember(athlete);
+        group.addCoach(coach);
         group = service.save(group);
         session.addGroup(group);
         long sessionId = sessionRepository.save(session).getId();
@@ -95,22 +112,27 @@ public class TrainingGroupServiceTest extends DataServiceTest<TrainingGroup> {
         List<TrainingSession> sessions = sessionRepository.findAllByGroupsContains(group);
         assertFalse(sessions.isEmpty());
         assertEquals(sessionId, sessions.get(0).getId());
+        List<Coach> coaches = coachRepository.findAllByTrainingGroupsContains(group);
+        assertFalse(coaches.isEmpty());
+        assertEquals(coachId, coaches.get(0).getId());
     }
 
     @Override
     public void testDelete() {
         Athlete athlete = new Athlete("NewAthleteN", "NewAthleteFN", "NewAthleteP");
         athlete = athleteRepository.save(athlete);
+        Coach coach = new Coach("NewCoachN", "NewCoachFN", "NewCoachP");
+        coach = coachRepository.save(coach);
         TrainingSession session = new TrainingSession("TSName");
         TrainingGroup group = new TrainingGroup("TGName");
         group.addMember(athlete);
+        group.addCoach(coach);
         group = repository.save(group);
         session.addGroup(group);
         sessionRepository.save(session);
         service.delete(group);
-        List<Athlete> athletes = athleteRepository.findAllByGroupsContains(group);
-        assertTrue(athletes.isEmpty());
-        List<TrainingSession> sessions = sessionRepository.findAllByGroupsContains(group);
-        assertTrue(sessions.isEmpty());
+        assertTrue(athleteRepository.findAllByGroupsContains(group).isEmpty());
+        assertTrue(sessionRepository.findAllByGroupsContains(group).isEmpty());
+        assertTrue(coachRepository.findAllByTrainingGroupsContains(group).isEmpty());
     }
 }

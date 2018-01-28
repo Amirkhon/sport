@@ -12,5 +12,6 @@ public interface DataService<T> {
     T initialize(T object);
     List<T> findAll();
     T save(T object);
+    @Transactional
     void delete(T object);
 }

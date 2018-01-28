@@ -27,14 +27,15 @@ public class TrainingSessionServiceImpl extends AbstractDataService<TrainingSess
     }
 
     public TrainingSession initialize(TrainingSession object, boolean includeResults) {
-        TrainingSession trainingSession = repository.getOne(object.getId());
-        if (trainingSession != null) {
-            trainingSession.getGroups().size();
-            trainingSession.getExercises().size();
+        object = repository.getOne(object.getId());
+        if (object != null) {
+            object.getGroups().size();
+            object.getExercises().size();
+            object.getCoaches().size();
+
             if (includeResults) {
-                trainingSession.getResults().size();
+                object.getResults().size();
             }
-            return trainingSession;
         }
         return object;
     }

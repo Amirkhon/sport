@@ -23,18 +23,11 @@ public class TrainingSessionResultServiceImpl extends AbstractDataService<Traini
 
     @Override
     public TrainingSessionResult initialize(TrainingSessionResult object) {
-        TrainingSessionResult sessionResult = repository.getOne(object.getId());
-        if(sessionResult != null) {
-            sessionResult.getResults().size();
-            sessionResult.getAttendances().size();
-            object = sessionResult;
+        object = repository.getOne(object.getId());
+        if(object != null) {
+            object.getResults().size();
+            object.getAttendances().size();
         }
         return object;
-    }
-
-    @Override
-    public void delete(TrainingSessionResult object) {
-
-        super.delete(object);
     }
 }

@@ -33,34 +33,32 @@ public class AthleteServiceImpl extends AbstractDataService<Athlete> implements 
 
     @Transactional
     public Athlete initialize(Athlete object, boolean includeResults, boolean includeAttendances) {
-        Athlete athlete = repository.getOne(object.getId());
-        if (athlete != null) {
-            athlete.getProperties().size();
-            athlete.getGroups().size();
-            athlete.getParameters().size();
+        object = repository.getOne(object.getId());
+        if (object != null) {
+            object.getProperties().size();
+            object.getGroups().size();
+            object.getParameters().size();
 
             if (includeResults) {
-                athlete.getResults().size();
+                object.getResults().size();
             }
 
             if (includeAttendances) {
-                athlete.getAttendances().size();
+                object.getAttendances().size();
             }
         }
 
         return object;
     }
 
-    @Transactional
     @Override
     public void delete(Athlete object) {
-        Athlete athlete = repository.getOne(object.getId());
-        if (athlete != null) {
+        object = repository.getOne(object.getId());
+        if (object != null) {
             for (UserGroup group : object.getGroups()) {
                 group.removeMember(object);
                 userGroupRepository.save(group);
             }
-            object = athlete;
         }
 
         super.delete(object);
