@@ -1,6 +1,7 @@
 package com.a31r.sport.coachassistant.core.service;
 
 import com.a31r.sport.coachassistant.core.TestConfiguration;
+import com.a31r.sport.coachassistant.core.model.AbstractEntity;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(
         classes = { TestConfiguration.class },
         loader = AnnotationConfigContextLoader.class)
-public abstract class DataServiceTest<T> extends TestCase {
+public abstract class DataServiceTest<T extends AbstractEntity> extends TestCase {
 
     @Test
     public void testFindById() {
