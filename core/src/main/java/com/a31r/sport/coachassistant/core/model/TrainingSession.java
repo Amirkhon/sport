@@ -30,9 +30,11 @@ public class TrainingSession extends AbstractEntity {
     @OneToMany(mappedBy = "trainingSession", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrainingExercise> exercises = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "coach_id")
-    private Coach coach;
+    @ManyToMany
+    @JoinTable(name = "training_session_coach",
+            joinColumns = @JoinColumn(name = "training_session_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "coach_id", referencedColumnName = "id"))
+    private Set<Coach> coaches = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "training_group_session",
@@ -67,12 +69,12 @@ public class TrainingSession extends AbstractEntity {
         this.exercises = exercises;
     }
 
-    public Coach getCoach() {
-        return coach;
+    public Set<Coach> getCoaches() {
+        return coaches;
     }
 
-    public void setCoach(Coach coach) {
-        this.coach = coach;
+    public void setCoaches(Set<Coach> coaches) {
+        this.coaches = coaches;
     }
 
     public Set<TrainingGroup> getGroups() {
@@ -101,6 +103,14 @@ public class TrainingSession extends AbstractEntity {
         exercise.setTrainingSession(null);
     }
 
+    public void addCoach(Coach coach) {
+        coaches.add(coach);
+    }
+
+    public void removeCoach(Coach coach) {
+        coaches.remove(coach);
+    }
+
     public void addGroup(TrainingGroup group) {
         groups.add(group);
     }
@@ -127,20 +137,13 @@ public class TrainingSession extends AbstractEntity {
 
         TrainingSession that = (TrainingSession) o;
 
-        if (schedule != null ? !schedule.equals(that.schedule) : that.schedule != null) return false;
-        return coach != null ? coach.equals(that.coach) : that.coach == null;
+        return name != null ? name.equals(that.name) : that.name == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (schedule != null ? schedule.hashCode() : 0);
-        result = 31 * result + (coach != null ? coach.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s (%s)", name, coach);
     }
 }

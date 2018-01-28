@@ -1,6 +1,6 @@
 package com.a31r.sport.coachassistant.core.service;
 
-import com.a31r.sport.coachassistant.core.ApplicationConfiguration;
+import com.a31r.sport.coachassistant.core.TestConfiguration;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
-        classes = { ApplicationConfiguration.class },
+        classes = { TestConfiguration.class },
         loader = AnnotationConfigContextLoader.class)
 public abstract class DataServiceTest<T> extends TestCase {
 

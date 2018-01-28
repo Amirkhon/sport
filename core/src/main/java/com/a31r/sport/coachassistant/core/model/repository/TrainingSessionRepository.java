@@ -11,6 +11,6 @@ import java.util.List;
  * Created by bahodurova on 1/10/2018.
  */
 public interface TrainingSessionRepository extends JpaRepository<TrainingSession, Long> {
-    List<TrainingSession> findAllByCoach(Coach coach);
+    List<TrainingSession> findAllByCoachesContains(Coach coach);
     List<TrainingSession> findAllByGroupsContains(TrainingGroup group);
 }

@@ -12,7 +12,7 @@ import java.util.List;
  * Created by bahodurova on 1/7/2018.
  */
 public interface TrainingGroupRepository extends JpaRepository<TrainingGroup, Long> {
-    List<TrainingGroup> findAllByCoach(Coach coach);
+    List<TrainingGroup> findAllByCoachesContains(Coach coach);
     List<TrainingGroup> findAllByMembersContains(Athlete athlete);
     List<TrainingGroup> findAllBySessionsContains(TrainingSession session);
 }

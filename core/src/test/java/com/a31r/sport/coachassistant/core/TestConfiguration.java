@@ -25,7 +25,7 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "com.a31r.sport.coachassistant.core.model.repository")
 @PropertySource("test.properties")
 @EnableTransactionManagement
-public class ApplicationConfiguration {
+public class TestConfiguration {
 
     @Autowired
     private Environment env;

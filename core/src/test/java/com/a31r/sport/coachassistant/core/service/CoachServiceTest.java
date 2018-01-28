@@ -57,10 +57,10 @@ public class CoachServiceTest extends DataServiceTest<Coach> {
         coach = repository.save(coach);
         coachId = coach.getId();
         TrainingGroup group = new TrainingGroup("TGroup");
-        group.setCoach(coach);
+        group.addCoach(coach);
         groupId = groupRepository.save(group).getId();
         TrainingSession session = new TrainingSession("TSName");
-        session.setCoach(coach);
+        session.addCoach(coach);
         sessionId = sessionRepository.save(session).getId();
     }
 
@@ -91,14 +91,14 @@ public class CoachServiceTest extends DataServiceTest<Coach> {
         Coach coach = new Coach("NewCoachN", "NewCoachFN", "NewCoachP");
         coach = repository.save(coach);
         TrainingGroup group = new TrainingGroup("NewTGName");
-        group.setCoach(coach);
-        groupId = groupRepository.save(group).getId();
+        group.addCoach(coach);
+        group = groupRepository.save(group);
         TrainingSession session = new TrainingSession("NewTSName");
-        session.setCoach(coach);
-        sessionId = sessionRepository.save(session).getId();
+        session.addCoach(coach);
+        session = sessionRepository.save(session);
         service.delete(coach);
-        assertTrue(groupRepository.findAllByCoach(coach).isEmpty());
-        assertTrue(sessionRepository.findAllByCoach(coach).isEmpty());
+        assertTrue(groupRepository.findAllByCoachesContains(coach).isEmpty());
+        assertTrue(sessionRepository.findAllByCoachesContains(coach).isEmpty());
         assertFalse(repository.existsById(coach.getId()));
     }
 }

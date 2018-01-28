@@ -55,12 +55,12 @@ public class TrainingGroupServiceTest extends DataServiceTest<TrainingGroup> {
         athlete = athleteRepository.save(athlete);
         athleteId = athlete.getId();
         TrainingSession session = new TrainingSession("TSName");
-        session = sessionRepository.save(session);
-        sessionId = session.getId();
         TrainingGroup group = new TrainingGroup("TGName");
         group.addMember(athlete);
-        group.addSession(session);
-        groupId = repository.save(group).getId();
+        group = repository.save(group);
+        groupId = group.getId();
+        session.addGroup(group);
+        sessionId = sessionRepository.save(session).getId();
     }
 
     @Override
@@ -83,12 +83,11 @@ public class TrainingGroupServiceTest extends DataServiceTest<TrainingGroup> {
         athlete = athleteRepository.save(athlete);
         long athleteId = athlete.getId();
         TrainingSession session = new TrainingSession("TSName");
-        session = sessionRepository.save(session);
-        long sessionId = session.getId();
         TrainingGroup group = new TrainingGroup("TGName");
         group.addMember(athlete);
-        group.addSession(session);
         group = service.save(group);
+        session.addGroup(group);
+        long sessionId = sessionRepository.save(session).getId();
         assertFalse(group.getId() == 0);
         List<Athlete> athletes = athleteRepository.findAllByGroupsContains(group);
         assertFalse(athletes.isEmpty());
@@ -103,11 +102,11 @@ public class TrainingGroupServiceTest extends DataServiceTest<TrainingGroup> {
         Athlete athlete = new Athlete("NewAthleteN", "NewAthleteFN", "NewAthleteP");
         athlete = athleteRepository.save(athlete);
         TrainingSession session = new TrainingSession("TSName");
-        session = sessionRepository.save(session);
         TrainingGroup group = new TrainingGroup("TGName");
         group.addMember(athlete);
-        group.addSession(session);
         group = repository.save(group);
+        session.addGroup(group);
+        sessionRepository.save(session);
         service.delete(group);
         List<Athlete> athletes = athleteRepository.findAllByGroupsContains(group);
         assertTrue(athletes.isEmpty());

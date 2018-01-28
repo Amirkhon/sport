@@ -18,10 +18,10 @@ public class Coach extends User {
         super(name, familyName, patronymic);
     }
 
-    @OneToMany(mappedBy = "coach")
+    @ManyToMany(mappedBy = "coaches")
     private Set<TrainingSession> trainingSessions = new HashSet<>();
 
-    @OneToMany(mappedBy = "coach")
+    @ManyToMany(mappedBy = "coaches")
     private Set<TrainingGroup> trainingGroups = new HashSet<>();
 
     public Set<TrainingSession> getTrainingSessions() {

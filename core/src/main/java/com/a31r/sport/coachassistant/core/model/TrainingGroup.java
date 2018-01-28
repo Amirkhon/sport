@@ -18,52 +18,37 @@ public class TrainingGroup extends UserGroup {
         super(name);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "coach_id")
-    private Coach coach;
+    @ManyToMany
+    @JoinTable(name = "training_group_coach",
+            joinColumns = @JoinColumn(name = "training_group_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "coach_id", referencedColumnName = "id"))
+    private Set<Coach> coaches = new HashSet<>();
 
     @ManyToMany(mappedBy = "groups")
     private Set<TrainingSession> sessions = new HashSet<>();
 
-    public Coach getCoach() {
-        return coach;
+    public Set<Coach> getCoaches() {
+        return coaches;
     }
 
-    public void setCoach(Coach coach) {
-        this.coach = coach;
+    public void setCoaches(Set<Coach> coaches) {
+        this.coaches = coaches;
     }
 
     public Set<TrainingSession> getSessions() {
         return sessions;
     }
 
-    public void setSessions(Set<TrainingSession> sessions) {
-        this.sessions = sessions;
-    }
-
-    public void addSession(TrainingSession session) {
-        sessions.add(session);
-    }
-
     public void removeSession(TrainingSession session) {
         sessions.remove(session);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        TrainingGroup that = (TrainingGroup) o;
-
-        return coach != null ? coach.equals(that.coach) : that.coach == null;
+    public void addCoach(Coach coach) {
+        coaches.add(coach);
     }
 
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (coach != null ? coach.hashCode() : 0);
-        return result;
+    public void removeCoach(Coach coach) {
+        coaches.remove(coach);
     }
+
 }
