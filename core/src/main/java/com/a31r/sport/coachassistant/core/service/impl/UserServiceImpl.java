@@ -23,8 +23,8 @@ public class UserServiceImpl extends AbstractDataService<User> implements UserSe
         return repository;
     }
 
-    @Override
     @Transactional
+    @Override
     public User initialize(User object) {
         object = repository.getOne(object.getId());
         if (object != null) {

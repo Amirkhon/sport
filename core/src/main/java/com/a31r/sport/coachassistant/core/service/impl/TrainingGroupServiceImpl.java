@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
  * Created by bahodurova on 1/16/2018.
  */
@@ -25,6 +27,7 @@ public class TrainingGroupServiceImpl extends AbstractDataService<TrainingGroup>
         return repository;
     }
 
+    @Transactional
     @Override
     public TrainingGroup initialize(TrainingGroup object) {
         object = repository.getOne(object.getId());
@@ -36,6 +39,7 @@ public class TrainingGroupServiceImpl extends AbstractDataService<TrainingGroup>
         return object;
     }
 
+    @Transactional
     @Override
     public void delete(TrainingGroup object) {
         object = repository.getOne(object.getId());

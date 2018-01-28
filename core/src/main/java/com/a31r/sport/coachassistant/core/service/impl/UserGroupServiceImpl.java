@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
  * Created by bahodurova on 1/16/2018.
  */
@@ -21,6 +23,7 @@ public class UserGroupServiceImpl extends AbstractDataService<UserGroup> impleme
         return repository;
     }
 
+    @Transactional
     @Override
     public UserGroup initialize(UserGroup object) {
         object = repository.getOne(object.getId());

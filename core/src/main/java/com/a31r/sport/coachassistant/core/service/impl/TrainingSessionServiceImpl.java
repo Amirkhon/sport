@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
  * Created by bahodurova on 1/16/2018.
  */
@@ -21,11 +23,13 @@ public class TrainingSessionServiceImpl extends AbstractDataService<TrainingSess
         return repository;
     }
 
+    @Transactional
     @Override
     public TrainingSession initialize(TrainingSession object) {
         return initialize(object, true);
     }
 
+    @Transactional
     public TrainingSession initialize(TrainingSession object, boolean includeResults) {
         object = repository.getOne(object.getId());
         if (object != null) {

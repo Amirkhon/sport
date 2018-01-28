@@ -26,6 +26,7 @@ public class AthleteServiceImpl extends AbstractDataService<Athlete> implements 
         return repository;
     }
 
+    @Transactional
     @Override
     public Athlete initialize(Athlete object) {
         return initialize(object, true, true);
@@ -51,6 +52,7 @@ public class AthleteServiceImpl extends AbstractDataService<Athlete> implements 
         return object;
     }
 
+    @Transactional
     @Override
     public void delete(Athlete object) {
         object = repository.getOne(object.getId());

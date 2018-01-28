@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
  * Created by bahodurova on 1/16/2018.
  */
@@ -29,6 +31,7 @@ public class CoachServiceImpl extends AbstractDataService<Coach> implements Coac
         return repository;
     }
 
+    @Transactional
     @Override
     public Coach initialize(Coach object) {
         object = repository.getOne(object.getId());
@@ -39,6 +42,7 @@ public class CoachServiceImpl extends AbstractDataService<Coach> implements Coac
         return object;
     }
 
+    @Transactional
     @Override
     public void delete(Coach object) {
         object = repository.getOne(object.getId());
