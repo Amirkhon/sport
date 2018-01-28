@@ -23,9 +23,9 @@ public class TrainingSession extends AbstractEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "schedule")
-    private Schedule schedule;
+    @Lob
+    @Column(name="CONTENT", length=512)
+    private String event;
 
     @OneToMany(mappedBy = "trainingSession", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrainingExercise> exercises = new ArrayList<>();
@@ -53,12 +53,12 @@ public class TrainingSession extends AbstractEntity {
         this.name = name;
     }
 
-    public Schedule getSchedule() {
-        return schedule;
+    public String getEvent() {
+        return event;
     }
 
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
+    public void setEvent(String event) {
+        this.event = event;
     }
 
     public List<TrainingExercise> getExercises() {
@@ -127,6 +127,48 @@ public class TrainingSession extends AbstractEntity {
     public void removeResult(TrainingSessionResult result) {
         results.remove(result);
         result.setTrainingSession(null);
+    }
+
+    private String getWeekdays() {
+        if (event != null) {
+            List<String> days = new ArrayList<>();
+            String eventString = event.toUpperCase();
+            if (eventString.contains("MO")) {
+                days.add("Пн");
+            }
+            if (eventString.contains("TU")) {
+                days.add("Вт");
+            }
+            if (eventString.contains("WE")) {
+                days.add("Ср");
+            }
+            if (eventString.contains("TH")) {
+                days.add("Чт");
+            }
+            if (eventString.contains("FR")) {
+                days.add("Пт");
+            }
+            if (eventString.contains("SA")) {
+                days.add("Сб");
+            }
+            if (eventString.contains("SU")) {
+                days.add("Вс");
+            }
+            StringBuilder sb = new StringBuilder("(");
+            for (int i = 0; days.size() - 2 >  i; i++) {
+                sb.append(days.get(i));
+                sb.append(", ");
+            }
+            sb.append(days.get(days.size() - 1));
+            sb.append(")");
+            return sb.toString();
+        }
+        return "";
+    }
+
+    @Override
+    public String toString() {
+        return name + getWeekdays();
     }
 
     @Override

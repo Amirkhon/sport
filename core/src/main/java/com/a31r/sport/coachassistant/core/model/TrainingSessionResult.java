@@ -2,6 +2,7 @@ package com.a31r.sport.coachassistant.core.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class TrainingSessionResult extends AbstractEntity {
     }
 
     @ManyToOne
+    @JoinColumn(name = "training_session_id", nullable = false)
     private TrainingSession trainingSession;
 
     @Column
@@ -93,6 +95,11 @@ public class TrainingSessionResult extends AbstractEntity {
     public void removeResult(ExerciseResult result) {
         this.results.remove(result);
         result.setTrainingSessionResult(null);
+    }
+
+    @Override
+    public String toString() {
+        return date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + " - " + author;
     }
 
     @Override
