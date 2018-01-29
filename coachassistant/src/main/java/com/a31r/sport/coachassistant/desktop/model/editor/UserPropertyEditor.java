@@ -3,8 +3,8 @@ package com.a31r.sport.coachassistant.desktop.model.editor;
 import com.a31r.sport.coachassistant.core.model.UserProperty;
 import com.a31r.sport.coachassistant.core.model.UserPropertyType;
 import com.a31r.sport.coachassistant.core.model.repository.UserPropertyTypeRepository;
-import com.a31r.sport.coachassistant.core.model.service.DataService;
-import com.a31r.sport.coachassistant.core.model.service.UserPropertyService;
+import com.a31r.sport.coachassistant.core.service.DataService;
+import com.a31r.sport.coachassistant.core.service.UserPropertyService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
@@ -44,9 +44,18 @@ public class UserPropertyEditor extends AbstractEditor<UserProperty> {
     }
 
     @Override
-    protected void setData() {
-        userPropertyTypeComboBox.setValue(object.getPropertyType());
-        value.setText(object.getValue());
+    protected void fillWithObjectData() {
+        setData(object.getPropertyType(), object.getValue());
+    }
+
+    @Override
+    protected void fillWithDefaultData() {
+        setData(null, "");
+    }
+
+    private void setData(UserPropertyType type, String theValue) {
+        userPropertyTypeComboBox.getSelectionModel().select(type);
+        value.setText(theValue);
     }
 
     @Override

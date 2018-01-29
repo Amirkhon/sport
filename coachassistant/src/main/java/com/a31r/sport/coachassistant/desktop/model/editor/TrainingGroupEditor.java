@@ -4,10 +4,10 @@ import com.a31r.sport.coachassistant.core.model.Athlete;
 import com.a31r.sport.coachassistant.core.model.Coach;
 import com.a31r.sport.coachassistant.core.model.TrainingGroup;
 import com.a31r.sport.coachassistant.core.model.TrainingSession;
-import com.a31r.sport.coachassistant.core.model.service.CoachService;
-import com.a31r.sport.coachassistant.core.model.service.DataService;
-import com.a31r.sport.coachassistant.core.model.service.TrainingGroupService;
+import com.a31r.sport.coachassistant.core.service.TrainingGroupService;
+import com.a31r.sport.coachassistant.core.service.DataService;
 import com.a31r.sport.coachassistant.desktop.model.selector.AthleteSelector;
+import com.a31r.sport.coachassistant.desktop.model.selector.CoachSelector;
 import com.a31r.sport.coachassistant.desktop.model.selector.Selector;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
@@ -15,7 +15,8 @@ import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by bahodurova on 1/16/2018.
@@ -28,25 +29,35 @@ public class TrainingGroupEditor extends AbstractUserGroupEditor<TrainingGroup, 
     @Autowired
     private AthleteSelector athleteSelector;
     @Autowired
-    private CoachService coachService;
+    private CoachSelector coachSelector;
 
-    private ComboBox<Coach> coachComboBox = new ComboBox<>();
+    private ListView<Coach> coachListView = new ListView<>();
+    private Button addCoach = new Button("Добавить");
+    private Button removeCoach = new Button("Удалить");
     private Tab trainingSessionsTab = new Tab("Тренировки");
     private ListView<TrainingSession> trainingSessionList = new ListView<>();
-    private Button addTrainingSession = new Button("Добавить");
-    private Button removeTrainingSession = new Button("Удалить");
 
     public TrainingGroupEditor() {
-        gridPane.add(new Label("Тренер"), 0, 1);
-        gridPane.add(coachComboBox, 1, 1);
-        trainingSessionsTab.setContent(new VBox(trainingSessionList,
-                new ToolBar(addTrainingSession, removeTrainingSession)));
-        tabPane.getTabs().add(trainingSessionsTab);
-    }
+        gridPane.add(new Label("Тренеры"), 0, 1);
+        gridPane.add(new VBox(coachListView, new ToolBar(addCoach, removeCoach)), 1, 1);
 
-    @PostConstruct
-    private void init() {
-        coachComboBox.setItems(FXCollections.observableArrayList(coachService.findAll()));
+        addCoach.setOnAction(event ->
+            coachSelector.openDialog(selected -> {
+                object.addCoach(selected);
+                addToListView(coachListView, selected);
+            })
+        );
+
+        removeCoach.setOnAction(event -> {
+            Coach selected = coachListView.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                object.removeCoach(selected);
+                removeFromListView(coachListView, selected);
+            }
+        });
+
+        trainingSessionsTab.setContent(trainingSessionList);
+        tabPane.getTabs().add(trainingSessionsTab);
     }
 
     @Override
@@ -62,24 +73,31 @@ public class TrainingGroupEditor extends AbstractUserGroupEditor<TrainingGroup, 
     @Override
     protected void beforeSave() {
         super.beforeSave();
-        object.setCoach(coachComboBox.getValue());
     }
 
     @Override
-    protected void setData() {
-        super.setData();
-        if (object.getCoach() != null) {
-            coachComboBox.getSelectionModel().select(object.getCoach());
-        }
-        trainingSessionList.setItems(FXCollections.observableArrayList(object.getSessions()));
+    protected void fillWithObjectData() {
+        super.fillWithObjectData();
+        setData(object.getCoaches(), object.getSessions());
+    }
+
+    @Override
+    protected void fillWithDefaultData() {
+        super.fillWithDefaultData();
+        setData(new HashSet<>(), new HashSet<>());
+    }
+
+    private void setData(Set<Coach> coaches, Set<TrainingSession> sessions) {
+        coachListView.setItems(FXCollections.observableArrayList(coaches));
+        trainingSessionList.setItems(FXCollections.observableArrayList(sessions));
     }
 
     @Override
     protected void setDisabled(boolean disabled) {
         super.setDisabled(disabled);
-        coachComboBox.setDisable(disabled);
-        addTrainingSession.setDisable(disabled);
-        removeTrainingSession.setDisable(disabled);
+        coachListView.setDisable(disabled);
+        addCoach.setDisable(disabled);
+        removeCoach.setDisable(disabled);
     }
 
     @Override

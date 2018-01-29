@@ -2,9 +2,10 @@ package com.a31r.sport.coachassistant.desktop.model.editor;
 
 import com.a31r.sport.coachassistant.core.model.Exercise;
 import com.a31r.sport.coachassistant.core.model.TrainingExercise;
-import com.a31r.sport.coachassistant.core.model.service.DataService;
-import com.a31r.sport.coachassistant.core.model.service.ExerciseService;
-import com.a31r.sport.coachassistant.core.model.service.TrainingExerciseService;
+import com.a31r.sport.coachassistant.core.model.TrainingSession;
+import com.a31r.sport.coachassistant.core.service.DataService;
+import com.a31r.sport.coachassistant.core.service.ExerciseService;
+import com.a31r.sport.coachassistant.core.service.TrainingExerciseService;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -80,12 +81,22 @@ public class TrainingExerciseEditor extends AbstractEditor<TrainingExercise> {
     }
 
     @Override
-    protected void setData() {
-        exerciseComboBox.getSelectionModel().select(object.getExercise());
-        sequenceNumber.setText(String.valueOf(object.getSequenceNumber()));
-        repetitions.setText(String.valueOf(object.getRepetitions()));
-        duration.setText(String.valueOf(object.getDuration() == null ? 0 : object.getDuration().toMinutes()));
-        trainingSession.setText(object.getTrainingSession().getName());
+    protected void fillWithObjectData() {
+        setData(object.getExercise(), object.getSequenceNumber(), object.getRepetitions(),
+                object.getDuration(), object.getTrainingSession());
+    }
+
+    @Override
+    protected void fillWithDefaultData() {
+        setData(null, 0,0, null, object.getTrainingSession());
+    }
+
+    private void setData(Exercise exercise, int sequenceNum, int repetitionsNum, Duration dur, TrainingSession session) {
+        exerciseComboBox.getSelectionModel().select(exercise);
+        sequenceNumber.setText(String.valueOf(sequenceNum));
+        repetitions.setText(String.valueOf(repetitionsNum));
+        duration.setText(String.valueOf(dur == null ? 0 : dur.toMinutes()));
+        trainingSession.setText(session.getName());
     }
 
     @Override

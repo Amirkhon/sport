@@ -1,7 +1,7 @@
 package com.a31r.sport.coachassistant.desktop.model.editor;
 
 import com.a31r.sport.coachassistant.core.model.AbstractEntity;
-import com.a31r.sport.coachassistant.core.model.service.DataService;
+import com.a31r.sport.coachassistant.core.service.DataService;
 import com.a31r.sport.coachassistant.desktop.model.Visible;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -10,9 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import org.hibernate.Hibernate;
-import org.hibernate.proxy.HibernateProxy;
 
 /**
  * Created by bahodurova on 1/11/2018.
@@ -29,6 +26,7 @@ public abstract class AbstractEditor<T extends AbstractEntity> implements Editor
     protected final BooleanProperty edit = new SimpleBooleanProperty(this, "edit", true);
     protected T object;
     protected Handler<T> handler;
+    protected boolean isNew = true;
 
     public AbstractEditor() {
         mainTab.setContent(gridPane);
@@ -47,20 +45,18 @@ public abstract class AbstractEditor<T extends AbstractEntity> implements Editor
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     }
 
-//    @Override
-//    public void setObject(T object) {
-//        setObject(object, null);
-//    }
-
     @Override
     public void setObject(T object, Handler<T> handler) {
         this.object = object;
         this.handler = handler;
-        if (object.getId() != null) {
-            getService().includeMembers(this.object);
+        this.isNew = object.getId() == 0;
+        if (!isNew) {
+            this.object = getService().initialize(object);
             edit.set(false);
+            fillWithObjectData();
+        } else {
+            fillWithDefaultData();
         }
-        setData();
     }
 
     @Override
@@ -88,8 +84,8 @@ public abstract class AbstractEditor<T extends AbstractEntity> implements Editor
 
     @Override
     public void cancel() {
-        if (object.getId() != null) {
-            setData();
+        if (object.getId() != 0) {
+            fillWithObjectData();
         }
         edit.set(false);
         if (handler != null) {
@@ -119,6 +115,7 @@ public abstract class AbstractEditor<T extends AbstractEntity> implements Editor
 
     protected abstract DataService<T> getService();
     protected abstract void beforeSave();
-    protected abstract void setData();
+    protected abstract void fillWithObjectData();
+    protected abstract void fillWithDefaultData();
     protected abstract void setDisabled(boolean disabled);
 }

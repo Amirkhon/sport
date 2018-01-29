@@ -1,8 +1,8 @@
 package com.a31r.sport.coachassistant.desktop.model.editor;
 
 import com.a31r.sport.coachassistant.core.model.AthleteParameterType;
-import com.a31r.sport.coachassistant.core.model.service.AthleteParameterTypeService;
-import com.a31r.sport.coachassistant.core.model.service.DataService;
+import com.a31r.sport.coachassistant.core.service.AthleteParameterTypeService;
+import com.a31r.sport.coachassistant.core.service.DataService;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +33,18 @@ public class AthleteParameterTypeEditor extends AbstractEditor<AthleteParameterT
     }
 
     @Override
-    public void setData() {
-        name.setText(object.getName());
-        unit.setText(object.getUnit());
+    public void fillWithObjectData() {
+        setData(object.getName(), object.getUnit());
+    }
+
+    @Override
+    protected void fillWithDefaultData() {
+        setData("", "");
+    }
+
+    private void setData(String theName, String theUnit) {
+        name.setText(theName);
+        unit.setText(theUnit);
     }
 
     @Override

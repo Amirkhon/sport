@@ -1,5 +1,6 @@
 package com.a31r.sport.coachassistant.desktop.model.selector;
 
+import com.a31r.sport.coachassistant.core.model.AbstractEntity;
 import javafx.collections.FXCollections;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Created by bahodurova on 1/16/2018.
  */
-public abstract class AbstractSelector<T> implements Selector<T> {
+public abstract class AbstractSelector<T extends AbstractEntity> implements Selector<T> {
 
     private final ComboBox<T> comboBox = new ComboBox<>();
     private final Button select = new Button("Ок");

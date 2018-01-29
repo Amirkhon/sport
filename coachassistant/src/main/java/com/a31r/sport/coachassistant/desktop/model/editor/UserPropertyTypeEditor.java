@@ -1,8 +1,8 @@
 package com.a31r.sport.coachassistant.desktop.model.editor;
 
 import com.a31r.sport.coachassistant.core.model.UserPropertyType;
-import com.a31r.sport.coachassistant.core.model.service.DataService;
-import com.a31r.sport.coachassistant.core.model.service.UserPropertyTypeService;
+import com.a31r.sport.coachassistant.core.service.DataService;
+import com.a31r.sport.coachassistant.core.service.UserPropertyTypeService;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +40,17 @@ public class UserPropertyTypeEditor extends AbstractEditor<UserPropertyType> {
     }
 
     @Override
-    protected void setData() {
-        name.setText(object.getName());
+    protected void fillWithObjectData() {
+        setData(object.getName());
+    }
+
+    @Override
+    protected void fillWithDefaultData() {
+        setData("");
+    }
+
+    private void setData(String theName) {
+        name.setText(theName);
     }
 
     @Override

@@ -3,10 +3,9 @@ package com.a31r.sport.coachassistant.desktop.model.editor;
 import com.a31r.sport.coachassistant.core.model.AthleteParameter;
 import com.a31r.sport.coachassistant.core.model.AthleteParameterType;
 import com.a31r.sport.coachassistant.core.model.AthleteParameterValue;
-import com.a31r.sport.coachassistant.core.model.repository.AthleteParameterValueRepository;
-import com.a31r.sport.coachassistant.core.model.service.AthleteParameterService;
-import com.a31r.sport.coachassistant.core.model.service.AthleteParameterTypeService;
-import com.a31r.sport.coachassistant.core.model.service.DataService;
+import com.a31r.sport.coachassistant.core.service.AthleteParameterService;
+import com.a31r.sport.coachassistant.core.service.AthleteParameterTypeService;
+import com.a31r.sport.coachassistant.core.service.DataService;
 import com.a31r.sport.coachassistant.desktop.view.util.DateTimeUtil;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
@@ -28,8 +27,6 @@ public class AthleteParameterEditor extends AbstractEditor<AthleteParameter> {
     private AthleteParameterService service;
     @Autowired
     private AthleteParameterTypeService athleteParameterTypeService;
-    @Autowired
-    private AthleteParameterValueRepository athleteParameterValueRepository;
 
     private ComboBox<AthleteParameterType> parameterTypeComboBox = new ComboBox<>();
     private final TextField value = new TextField();
@@ -69,13 +66,20 @@ public class AthleteParameterEditor extends AbstractEditor<AthleteParameter> {
     }
 
     @Override
-    protected void setData() {
-        parameterTypeComboBox.setValue(object.getParameterType());
-        if (object.getId() != null) {
-            value.setText(object.getLatestValue().getValue());
-            date.setText(object.getLatestValue().getDate()
-                    .format(DateTimeUtil.getDefaultFormatter()));
-        }
+    protected void fillWithObjectData() {
+        setData(object.getParameterType(), object.getLatestValue().getDate(),
+                object.getLatestValue().getValue());
+    }
+
+    @Override
+    protected void fillWithDefaultData() {
+        setData(null, LocalDate.now(), "");
+    }
+
+    private void setData(AthleteParameterType type, LocalDate localDate, String paramValue) {
+        value.setText(paramValue);
+        date.setText(localDate.format(DateTimeUtil.getDefaultFormatter()));
+        parameterTypeComboBox.getSelectionModel().select(type);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.a31r.sport.coachassistant.desktop.model.selector;
 
 import com.a31r.sport.coachassistant.core.model.Athlete;
-import com.a31r.sport.coachassistant.core.model.service.AthleteService;
+import com.a31r.sport.coachassistant.core.service.AthleteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

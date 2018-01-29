@@ -1,8 +1,5 @@
 package com.a31r.sport.coachassistant.desktop.model.editor;
 
-import com.a31r.sport.coachassistant.core.model.service.UserGroupService;
-import com.a31r.sport.coachassistant.core.model.service.UserPropertyService;
-import com.a31r.sport.coachassistant.desktop.model.selector.UserGroupSelector;
 import com.a31r.sport.coachassistant.desktop.view.util.DialogUtil;
 import com.a31r.sport.coachassistant.desktop.view.util.ImageUtils;
 import com.a31r.sport.coachassistant.core.model.User;
@@ -16,12 +13,15 @@ import javafx.util.StringConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by bahodurova on 1/12/2018.
@@ -29,13 +29,7 @@ import java.time.format.DateTimeFormatter;
 public abstract class AbstractUserEditor<T extends User> extends AbstractEditor<T> {
 
     @Autowired
-    private UserGroupService groupService;
-    @Autowired
-    private UserPropertyService propertyService;
-    @Autowired
-    private UserPropertyEditor propertyEditorService;
-    @Autowired
-    private UserGroupSelector userGroupSelector;
+    private UserPropertyEditor propertyEditor;
 
     private final ImageView photo = new ImageView("/images/no-photo.png");
     private byte[] image = null;
@@ -50,9 +44,6 @@ public abstract class AbstractUserEditor<T extends User> extends AbstractEditor<
     protected final Button addPropertyButton = new Button("Добавить");
     protected final Button editPropertyButton = new Button("Изменить");
     protected final Button removePropertyButton = new Button("Удалить");
-
-    protected final Button addGroupButton = new Button("Добавить");
-    protected final Button removeGroupButton = new Button("Удалить");
 
     public AbstractUserEditor() {
         gridPane.add(new Label("Фотография"), 0, 0);
@@ -106,44 +97,18 @@ public abstract class AbstractUserEditor<T extends User> extends AbstractEditor<
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
+        groups.setDisable(true);
         setupPropertiesToolbar();
-        setupGroupsToolbar();
-    }
-
-    private void setupGroupsToolbar() {
-        addGroupButton.setOnAction(event ->
-                userGroupSelector.openDialog(selected -> {
-                    groupService.includeMembers(selected);
-//                    object.addGroup(selected);
-                    selected.addMember(object);
-                    groupService.save(selected);
-                    addToListView(groups, selected);
-                })
-        );
-
-        removeGroupButton.setOnAction(event -> {
-            UserGroup selected = groups.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                groupService.includeMembers(selected);
-//                object.removeGroup(selected);
-                selected.removeMember(object);
-                groupService.save(selected);
-                removeFromListView(groups, selected);
-            }
-        });
     }
 
     private void setupPropertiesToolbar() {
         addPropertyButton.setOnAction(event -> {
-            UserProperty newUserProperty = propertyEditorService.newObject();
-            newUserProperty.setUser(object);
-            openPropertyDialog(newUserProperty);
+            openPropertyDialog(propertyEditor.newObject());
         });
 
         editPropertyButton.setOnAction(event -> {
             UserProperty selected = properties.getSelectionModel().getSelectedItem();
             if (selected != null) {
-//                removeFromListView(properties, selected);
                 openPropertyDialog(selected);
             }
         });
@@ -151,47 +116,36 @@ public abstract class AbstractUserEditor<T extends User> extends AbstractEditor<
         removePropertyButton.setOnAction(event -> {
             UserProperty selected = properties.getSelectionModel().getSelectedItem();
             if (selected != null) {
-                removeFromListView(properties, selected);
                 object.removeProperty(selected);
+                removeFromListView(properties, selected);
             }
         });
     }
 
     private void openPropertyDialog(UserProperty userProperty) {
-//        propertyEditorService.setObject(userProperty);
-        PopupEditor.open(propertyEditorService, userProperty, result -> {
+        PopupEditor.open(propertyEditor, userProperty, result -> {
             object.addProperty(result);
             addToListView(properties, userProperty);
         });
-//        DialogUtil.editCardDialog(propertyEditorService, save -> {
-//            userProperty.setUser(object);
-//            propertyService.save(userProperty);
-//
-//        }, cancel -> {
-//            addToListView(properties, userProperty);
-//        });
     }
 
-    @Transactional
     @Override
-    protected void setData() {
-        if (object.getPhoto() != null && object.getPhoto().length > 0)
-        {
-            photo.setImage(ImageUtils.cropAndFit(object.getPhoto(), 245, 270));
-        }
-        this.familyName.setText(object.getFamilyName());
-        this.name.setText(object.getName());
-        this.patronymic.setText(object.getPatronymic());
-        this.birthday.setValue(object.getBirthday());
-        this.properties.setItems(FXCollections.observableArrayList(object.getProperties()));
-        this.groups.setItems(FXCollections.observableArrayList(object.getGroups()));
+    protected void fillWithObjectData() {
+        setData(object.getFamilyName(), object.getName(), object.getPatronymic(),
+                object.getBirthday(), object.getPhoto(), object.getProperties(), object.getGroups());
+    }
+
+    @Override
+    protected void fillWithDefaultData() {
+        setData("", "", "",
+                LocalDate.of(2000, 1, 1), null, new ArrayList<>(), new HashSet<>());
     }
 
     @Override
     protected void beforeShow() {
         propertyTab.setContent(
                 new VBox(properties, new ToolBar(addPropertyButton, removePropertyButton, editPropertyButton)));
-        groupTab.setContent(new VBox(groups, new ToolBar(addGroupButton, removeGroupButton)));
+        groupTab.setContent(groups);
         tabPane.getTabs().addAll(propertyTab, groupTab);
     }
 
@@ -206,6 +160,20 @@ public abstract class AbstractUserEditor<T extends User> extends AbstractEditor<
         object.setBirthday(birthday.getValue());
     }
 
+    private void setData(String familyName, String name, String patronymic, LocalDate birthday,
+                           byte[] rawPhoto, List<UserProperty> properties, Set<UserGroup> groups) {
+        if (rawPhoto != null && rawPhoto.length > 0)
+        {
+            photo.setImage(ImageUtils.cropAndFit(rawPhoto, 245, 270));
+        }
+        this.familyName.setText(familyName);
+        this.name.setText(name);
+        this.patronymic.setText(patronymic);
+        this.birthday.setValue(birthday);
+        this.properties.setItems(FXCollections.observableArrayList(properties));
+        this.groups.setItems(FXCollections.observableArrayList(groups));
+    }
+
     @Override
     public void setDisabled(boolean disabled) {
         this.photo.setDisable(disabled);
@@ -217,8 +185,5 @@ public abstract class AbstractUserEditor<T extends User> extends AbstractEditor<
         this.addPropertyButton.setDisable(disabled);
         this.editPropertyButton.setDisable(disabled);
         this.removePropertyButton.setDisable(disabled);
-        this.groups.setDisable(disabled && object.getId() != null);
-        this.addGroupButton.setDisable(disabled || object.getId() == null);
-        this.removeGroupButton.setDisable(disabled || object.getId() == null);
     }
 }

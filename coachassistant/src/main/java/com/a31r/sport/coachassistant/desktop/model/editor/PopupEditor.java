@@ -1,6 +1,10 @@
 package com.a31r.sport.coachassistant.desktop.model.editor;
 
+import com.a31r.sport.coachassistant.core.model.AbstractEntity;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -11,11 +15,11 @@ public class PopupEditor {
 
     private PopupEditor() {}
 
-    public static <T> void open(Editor<T> editor, T object, Handler<T> callback) {
+    public static <T extends AbstractEntity> void open(Editor<T> editor, T object, Handler<T> callback) {
         open(editor, object, callback, null, null);
     }
 
-    public static <T> void open(Editor<T> editor, T object, Handler<T> callback, Integer width, Integer height) {
+    public static <T extends AbstractEntity> void open(Editor<T> editor, T object, Handler<T> callback, Integer width, Integer height) {
         Stage stage = new Stage();
         editor.setObject(object, new Editor.Handler<T>() {
             @Override
@@ -30,7 +34,11 @@ public class PopupEditor {
                 stage.close();
             }
         });
-        stage.setScene(new Scene(new VBox(editor.show())));
+        Parent view = editor.show();
+        BorderPane viewHolder = new BorderPane();
+        viewHolder.setCenter(view);
+        BorderPane.setMargin(view, new Insets(10, 0, 10, 0));
+        stage.setScene(new Scene(viewHolder));
         editor.edit();
         if (width != null) {
             stage.setMinWidth(width);
@@ -41,7 +49,7 @@ public class PopupEditor {
         stage.show();
     }
 
-    public interface Handler<T> {
+    public interface Handler<T extends AbstractEntity> {
         void onSave(T result);
     }
 

@@ -7,6 +7,9 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by bahodurova on 1/17/2018.
  */
@@ -26,26 +29,15 @@ public abstract class AbstractUserGroupEditor<T extends UserGroup, U extends Use
 
         add.setOnAction(event ->
                 getSelector().openDialog(selected -> {
-
-                    object.getMembers().add(selected);
-//                    if (object.getId() != null) {
-//                        getService().save(object);
-//                    }
+                    object.addMember(selected);
                     addToListView(members, selected);
-//                    members.getItems().add(selected);
-//                    members.refresh();
                 }));
 
         remove.setOnAction(event -> {
             User selected = members.getSelectionModel().getSelectedItem();
             if (selected != null) {
-                object.getMembers().remove(selected);
-//                if (object.getId() != null) {
-//                    getService().save(object);
-//                }
+                object.removeMember(selected);
                 removeFromListView(members, selected);
-//                members.getItems().remove(selected);
-//                members.refresh();
             }
         });
     }
@@ -56,9 +48,18 @@ public abstract class AbstractUserGroupEditor<T extends UserGroup, U extends Use
     }
 
     @Override
-    protected void setData() {
-        name.setText(object.getName());
-        members.setItems(FXCollections.observableArrayList(object.getMembers()));
+    protected void fillWithObjectData() {
+        setData(object.getName(), object.getMembers());
+    }
+
+    @Override
+    protected void fillWithDefaultData() {
+        setData("", new HashSet<>());
+    }
+
+    private void setData(String groupName, Set<User> users) {
+        name.setText(groupName);
+        members.setItems(FXCollections.observableArrayList(users));
     }
 
     @Override

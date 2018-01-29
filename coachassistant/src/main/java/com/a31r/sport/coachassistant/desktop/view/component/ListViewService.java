@@ -1,8 +1,8 @@
 package com.a31r.sport.coachassistant.desktop.view.component;
 
-import com.a31r.sport.coachassistant.core.model.service.*;
+import com.a31r.sport.coachassistant.core.model.AbstractEntity;
+import com.a31r.sport.coachassistant.core.service.*;
 import com.a31r.sport.coachassistant.desktop.model.editor.*;
-import com.a31r.sport.coachassistant.desktop.view.util.DialogUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Parent;
@@ -25,6 +25,8 @@ public class ListViewService {
     @Autowired
     private AthleteService athleteService;
     @Autowired
+    private CoachService coachService;
+    @Autowired
     private UserPropertyTypeService userPropertyTypeService;
     @Autowired
     private AthleteParameterTypeService athleteParameterTypeService;
@@ -33,12 +35,12 @@ public class ListViewService {
     @Autowired
     private ExerciseService exerciseService;
     @Autowired
-    private TrainingExerciseGroupService trainingExerciseGroupService;
-    @Autowired
     private TrainingSessionService trainingSessionService;
 
     @Autowired
-    private AthleteEditor athleteEditorService;
+    private AthleteEditor athleteEditor;
+    @Autowired
+    private CoachEditor coachEditor;
     @Autowired
     private TrainingGroupEditor trainingGroupEditor;
     @Autowired
@@ -52,11 +54,11 @@ public class ListViewService {
 
     private DataService dataService;
     private Editor editor;
-    private Editor.Handler handler = new Editor.Handler() {
+    private Editor.Handler<AbstractEntity> handler = new Editor.Handler() {
         @Override
-        public Object onSave(Object object) {
+        public AbstractEntity onSave(AbstractEntity object) {
             view.setCenter(null);
-            if (!listView.getItems().contains(object)) {
+            if (!listView.getItems().stream().anyMatch(abstractEntity -> abstractEntity.getId() == object.getId())) {
                 listView.getItems().add(object);
             }
             listView.refresh();
@@ -70,7 +72,7 @@ public class ListViewService {
     };
 
     private final BorderPane view = new BorderPane();
-    private final ListView listView = new ListView();
+    private final ListView<AbstractEntity> listView = new ListView();
     private final VBox listViewHolder = new VBox();
     private final Button addButton = new Button("Добавить");
     private final Button editButton = new Button("Изменить");
@@ -85,7 +87,7 @@ public class ListViewService {
         return editor;
     }
 
-    private void onRemove(Object selected) {
+    private void onRemove(AbstractEntity selected) {
         dataService.delete(selected);
     }
 
@@ -97,7 +99,11 @@ public class ListViewService {
         switch (listType) {
             case ATHLETES:
                 dataService = athleteService;
-                editor = athleteEditorService;
+                editor = athleteEditor;
+                break;
+            case COACHES:
+                dataService = coachService;
+                editor = coachEditor;
                 break;
             case TRAINING_GROUPS:
                 dataService = trainingGroupService;
@@ -138,14 +144,14 @@ public class ListViewService {
         setListType(ListType.ATHLETES);
 
         editButton.setOnAction(event -> {
-            Object selected = listView.getSelectionModel().getSelectedItem();
+            AbstractEntity selected = listView.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 getEditor().edit();
             }
         });
 
         removeButton.setOnAction(event -> {
-            Object selected = listView.getSelectionModel().getSelectedItem();
+            AbstractEntity selected = listView.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 listView.getItems().remove(selected);
                 onRemove(selected);
@@ -153,13 +159,9 @@ public class ListViewService {
         });
 
         addButton.setOnAction(event -> {
-            Object object = getEditor().newObject();
+            AbstractEntity object = getEditor().newObject();
             getEditor().setObject(object, handler);
-            view.setCenter(editor.show()/*DialogUtil.editCard(getEditor(), save -> {
-                dataService.save(object);
-                listView.getItems().add(object);
-                listView.refresh();
-            }, cancel -> getEditor().cancel())*/);
+            view.setCenter(editor.show());
             editor.edit();
         });
 
@@ -170,8 +172,6 @@ public class ListViewService {
         listView.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue != null) {
-//                        listView.getItems().remove(newValue);
-//                        listView.refresh();
                         getEditor().setObject(newValue, handler);
                         view.setCenter(getEditor().show());
                         setDisableButtons(false);
@@ -185,6 +185,7 @@ public class ListViewService {
 
     public enum ListType {
         ATHLETES("athletes", "Спортсмены"),
+        COACHES("coaches", "Тренеры"),
         TRAINING_GROUPS("trainingGroups","Группы"),
         EXERCISES("exercises","Упражнения"),
         TRAINING_SESSIONS("trainingSessions","Тренировки"),

@@ -1,8 +1,8 @@
 package com.a31r.sport.coachassistant.desktop.model.editor;
 
 import com.a31r.sport.coachassistant.core.model.Exercise;
-import com.a31r.sport.coachassistant.core.model.service.DataService;
-import com.a31r.sport.coachassistant.core.model.service.ExerciseService;
+import com.a31r.sport.coachassistant.core.service.DataService;
+import com.a31r.sport.coachassistant.core.service.ExerciseService;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +44,18 @@ public class ExerciseEditor extends AbstractEditor<Exercise> {
     }
 
     @Override
-    protected void setData() {
-        name.setText(object.getName());
-        unit.setText(object.getUnit());
+    protected void fillWithObjectData() {
+        setData(object.getName(), object.getUnit());
+    }
+
+    @Override
+    protected void fillWithDefaultData() {
+        setData("", "");
+    }
+
+    private void setData(String theName, String theUnit) {
+        name.setText(theName);
+        unit.setText(theUnit);
     }
 
     @Override

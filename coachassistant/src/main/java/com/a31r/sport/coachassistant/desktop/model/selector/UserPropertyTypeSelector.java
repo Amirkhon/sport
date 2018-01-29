@@ -1,8 +1,7 @@
 package com.a31r.sport.coachassistant.desktop.model.selector;
 
 import com.a31r.sport.coachassistant.core.model.UserPropertyType;
-import com.a31r.sport.coachassistant.core.model.repository.UserPropertyTypeRepository;
-import com.a31r.sport.coachassistant.core.model.service.UserPropertyTypeService;
+import com.a31r.sport.coachassistant.core.service.UserPropertyTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
